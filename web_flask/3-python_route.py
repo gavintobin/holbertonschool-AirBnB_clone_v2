@@ -24,7 +24,7 @@ def cisntfun(text):
 @app.route('/python/<text>', defaults={'text': 'is cool'})
 @app.route('/python/<text>', strict_slashes=False)
 def weluvpy(text):
-    return 'Python' + text.replace('_', ' ')
+    return 'Python ' + text.replace('_', ' ')
 
 
 if __name__ == '__main__':
