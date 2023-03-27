@@ -5,6 +5,7 @@ from sqlalchemy.orm import session, sessionmaker, scoped_session
 from os import getenv
 from models import city, place, review, state, amenity, user
 
+
 class DBStorage:
     __engine = None
     __session = None

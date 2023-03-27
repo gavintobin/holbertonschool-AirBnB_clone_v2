@@ -5,7 +5,6 @@ import models
 from models import city, place, review, state, amenity, user, base_model
 
 
-
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
     CDIC = {
@@ -22,7 +21,7 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         mydict = {}
-        if cls:  
+        if cls:
             for k, v in FileStorage.__objects.items():
                 if isinstance(v, cls):
                     mydict[k] = v
