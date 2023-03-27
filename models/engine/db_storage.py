@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from models.base_model import Base, BaseModel
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, MetaData
 from sqlalchemy.orm import session, sessionmaker, scoped_session
 from os import getenv
 from models import city, place, review, state, amenity, user

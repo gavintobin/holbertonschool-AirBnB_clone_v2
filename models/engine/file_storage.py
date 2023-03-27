@@ -20,14 +20,15 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        mydict = {}
-        if cls:
-            for k, v in FileStorage.__objects.items():
-                if isinstance(v, cls):
-                    mydict[k] = v
-            return mydict
-        else:
-            return FileStorage.__objects
+        if cls is not None:
+            if cls in self.CDIC.keys():
+                cls = self.CDIC.get(cls)
+            spec_rich = {}
+            for ky, vl in self.__objects.items():
+                if cls == type(vl):
+                    spec_rich[ky] = vl
+            return spec_rich
+        return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
