@@ -1,19 +1,21 @@
 #!/usr/bin/python3
 from models.base_model import Base, BaseModel
-from models.user import User
-from models.state import State
-from models.place import Place
-from models.amenity import Amenity
-from models.review import Review
-from models.city import City
 from sqlalchemy import create_engine
 from sqlalchemy.orm import session, sessionmaker, scoped_session
 from os import getenv
-
+from models import city, place, review, state, amenity, user
 
 class DBStorage:
     __engine = None
     __session = None
+    CDIC = {
+        'City': city.City,
+        'Place': place.Place,
+        'Review': review.Review,
+        'State': state.State,
+        'Amenity': amenity.Amenity,
+        'User': user.User
+    }
 
     def __init__(self):
         from models.base_model import Base, BaseModel
@@ -27,19 +29,19 @@ class DBStorage:
             Base.metadata.dropall(self.__engine)
 
     def all(self, cls=None):
-        cls_list = ["Reviews", "City", "State", "User",
-                    "Place", "Amenity"]
-        obj_list = []
+        obj_dct = {}
+        qry = []
         if cls is None:
-            for cls_name in cls_list:
-                obj_list.extend(self.__session.query(cls_name).all())
-
+            for cls_typ in DBStorage.CDIC.values():
+                qry.extend(self.__session.query(cls_typ).all())
         else:
-            if type(cls) == str:
-                cls = eval(cls)
-            obj_list = self.__session.query(cls).all()
-        return {"{}.{}".format(type(obj).__name__,
-                               obj.id): obj for obj in obj_list}
+            if cls in self.CDIC.keys():
+                cls = self.CDIC.get(cls)
+            qry = self.__session.query(cls)
+        for obj in qry:
+            obj_key = "{}.{}".format(type(obj).__name__, obj.id)
+            obj_dct[obj_key] = obj
+        return obj_dct
 
     def add(self, obj):
         self.__session.add(obj)
