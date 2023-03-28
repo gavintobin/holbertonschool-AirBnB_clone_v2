@@ -7,6 +7,7 @@ from models import city, place, review, state, amenity, user
 
 
 class DBStorage:
+    """db store class"""
     __engine = None
     __session = None
     CDIC = {
