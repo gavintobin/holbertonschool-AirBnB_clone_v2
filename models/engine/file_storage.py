@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
-import models
 from models import city, place, review, state, amenity, user, base_model
 
 
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
+    __file_path = 'file.json'
+    __objects = {}
     CDIC = {
         'City': city.City,
         'Place': place.Place,
@@ -15,11 +16,10 @@ class FileStorage:
         'Amenity': amenity.Amenity,
         'User': user.User
     }
-    __file_path = 'file.json'
-    __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
+        """Returns a dictionary of models currently in storage
+        if cls specified, only returns that class"""
         if cls is not None:
             if cls in self.CDIC.keys():
                 cls = self.CDIC.get(cls)
@@ -41,8 +41,6 @@ class FileStorage:
             temp.update(FileStorage.__objects)
             for key, val in temp.items():
                 temp[key] = val.to_dict()
-                if '_sa_instance_state' in temp:
-                    del temp['_sa_instance_state']
             json.dump(temp, f)
 
     def reload(self):
@@ -55,15 +53,27 @@ class FileStorage:
         from models.amenity import Amenity
         from models.review import Review
 
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
+        try:
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
+
     def delete(self, obj=None):
-        """deletes objects"""
-        if obj is None:
-            return
-        else:
-            ob = ("{}.{}").format(obj.__class__.__name__, obj.id)
-            if ob in self.__objects:
-                del self.__objects[ob]
-                self.save()
+        """if obj deletes obj from __objects"""
+        try:
+            key = obj.__class__.__name__ + "." + obj.id
+            del self.__objects[key]
+        except (AttributeError, KeyError):
+            pass
 
     def close(self):
         self.reload()
