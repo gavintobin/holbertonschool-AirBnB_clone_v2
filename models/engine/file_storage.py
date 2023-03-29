@@ -46,18 +46,14 @@ class FileStorage:
             json.dump(temp, f)
 
     def reload(self):
-        """deseriaizes objescts"""
-        try:
-            with open(self.__file_path, mode='r', encoding='utf-8') as f:
-                moby = json.load(f)
-                for key, value in moby.items():
-                    obj = eval(value['__class__'])(**value)
-                    self.__objects[key] = obj
-
-        except FileNotFoundError:
-            pass
-        except json.decoder.JSONDecodeError:
-            pass
+        """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
 
     def delete(self, obj=None):
         """deletes objects"""
