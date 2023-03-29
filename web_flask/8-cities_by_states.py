@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""task 8"""
+"""task 9"""
 from flask import Flask, request, render_template
 from models import storage
 
@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/cities_by_states", strict_slashes=False)
 def cities_list():
-    '''8'''
+    '''9'''
     states = storage.all('State')
     return render_template("8-cities_by_states.html", states=states)
 
